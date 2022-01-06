@@ -1,0 +1,63 @@
+﻿@page
+@model StatsMonitor.Pages.Statistics.DocumentsModel
+@{
+    ViewData["Title"] = "Documents Page";
+}
+
+<div class="container row p-0 m-0">
+    <div class="col-5">
+        <h1 class="text-info">Documents Page</h1>
+    </div>
+    <div class="col-7">
+        <p>Number of Entries: -not working-</p>
+    </div>
+
+    <div class="col-12 mt-3 container row p-0">
+        <div class="chart-container col-10 p-0">
+            <canvas id="totalChart"></canvas>
+        </div>
+        <div class="chart-container col-10 p-0">
+            <canvas id="mostUsedChart"></canvas>
+        </div>
+    </div>
+
+    <form id="filterForm" method="post" class="col-12">
+        <div class="col-12 p-3 border mt-3 container row">
+            <h5 class="col-2">Date filter</h5>
+
+            <div class="form-group row col-4">
+                <div class="col-2">
+                    <label>From</label>
+                </div>
+                <div class="col-7">
+                    <input type="date" asp-for="DateFilter.FromDate" />
+                </div>
+            </div>
+
+            <div class="form-group row col-4">
+                <div class="col-1">
+                    <label>To</label>
+                </div>
+                <div class="col-7">
+                    <input type="date" asp-for="DateFilter.ToDate" />
+                </div>
+            </div>
+            <div class="col-2">
+                <input type="submit" class="col-8 offset-2 btn btn-info form-control text-white" />
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+
+        var ctx1 = document.getElementById('totalChart');
+        var ctx2 = document.getElementById('mostUsedChart');
+        var chart1 = new Chart(ctx1, @Html.Raw(Model.TotalChart) );
+        var chart2 = new Chart(ctx2, @Html.Raw(Model.MostUsedChart) );
+
+    });
+    setTimeout(function () { document.getElementById('filterForm').submit(); }, 30000);
+</script>

@@ -1,0 +1,122 @@
+﻿@page
+@model StatsMonitor.Pages.Statistics.TasksModel
+@{
+    ViewData["Title"] = "Tasks Page";
+}
+
+<div class="container row p-0 m-0">
+    <div class="col-3.5">
+        <h1 class="text-info">Task Page</h1>
+    </div>
+    <div class="col-3">
+        <p>Number of Entries: @Model.NumberOfEntries</p>
+    </div>
+    <div class="col-3 row">
+        <p>Average number of task pr company: @Model.AverageNumberOfTasks</p>
+    </div>
+    <div class="col-3 row">
+        <p>Number of Dedicated task: @Model.NumberOfDedicatedTasks</p>
+    </div>
+    <div class="col-3 row">
+        <p>Number of Custom task: @Model.NumberOfCustomTasks</p>
+    </div>
+
+    <div class="col-12 border p-3 mt-3">
+        <div class="chart-container" width="600" height="400">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-auto border p-3 mt-3 mr-1">
+        <form id="filterForm" method="post">
+            <h5>Task filter</h5>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-4">
+                    <select asp-for="TaskFilter.Status">
+                        @foreach (var status in Enum.GetValues(typeof(StatsMonitor.Models.TaskStatus)))
+                        {
+                            <option value="@status">@status.ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label>From</label>
+                </div>
+                <div class="col-4">
+                    <input type="date" asp-for="TaskFilter.FromDate" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label>To</label>
+                </div>
+                <div class="col-4">
+                    <input type="date" asp-for="TaskFilter.ToDate" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <input type="submit" class="col-8 offset-2 btn btn-info form-control text-white" />
+            </div>
+        </form>
+    </div>
+    <div class="col-6 border p-3 mt-3">
+
+    </div>
+
+    <div class="col-12 border p-3 mt-3">
+        <form method="get">
+            @if (Model.Entries?.Count() > 0)
+            {
+                <table class="table table-striped border">
+                    <tr class="table-secondary">
+                        <th>
+                            <label>Date</label>
+                        </th>
+                        <th>
+                            <label asp-for="Entries.FirstOrDefault().Count"></label>
+                        </th>
+                    </tr>
+
+                    @foreach (var entry in Model.Entries)
+                    {
+                        <tr>
+                            <td>
+
+                                @Html.DisplayFor(m => entry.Key)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => entry.Count)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                if (Model.Message != null)
+                {
+                    <p>@Model.Message</p>
+                }
+                else
+                {
+                    <p>Its empty?!</p>
+                }
+            }
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+
+        var ctx = document.getElementById('myChart');
+        var myChart = new Chart(ctx, @Html.Raw(Model.ChartJson) );
+
+    });
+    setTimeout(function () { window.location.reload(); }, 10000);
+</script>
